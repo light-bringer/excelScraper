@@ -10,7 +10,7 @@ def print_hi(name):
 
 
 def work():
-    EXCEL_FILE = "/home/light-bringer/Downloads/keywords.xlsx"
+    EXCEL_FILE: str = "/home/light-bringer/Downloads/keywords.xlsx"
     products_to_scrape = read_xls_csv(EXCEL_FILE)
     UA = UserAgents()
     '''
@@ -34,8 +34,8 @@ def work():
         amzn_products.append(product_details)
 
     print(amzn_products)
-    with open('data.json', 'w') as f:
-        json.dump(amzn_products, f)
+    with open('data.json', 'w', encoding='utf-8') as f:
+        json.dump(amzn_products, f, ensure_ascii=False, indent=4)
 
 
 # Press the green button in the gutter to run the script.
