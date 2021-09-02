@@ -1,6 +1,7 @@
 from reader import read_xls_csv
 from headers import UserAgents
 from scraper import Amazon
+import json
 
 
 def print_hi(name):
@@ -20,6 +21,7 @@ def work():
     "keyword2": row[4],
     "keyword3": row[5],
     '''
+    amzn_products = []
     for product in products_to_scrape:
         ua_header = {
             'User-Agent': UA.getRandomUA()
@@ -29,7 +31,11 @@ def work():
                                         keyword=product["keyword1"] or product["keyword2"] or product["keyword3"],
                                         headers=ua_header
                                         )
-        print(product_details)
+        amzn_products.append(product_details)
+
+    print(amzn_products)
+    with open('data.json', 'w') as f:
+        json.dump(amzn_products, f)
 
 
 # Press the green button in the gutter to run the script.
