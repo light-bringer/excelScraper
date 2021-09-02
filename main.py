@@ -26,10 +26,11 @@ def work():
         }
         print(ua_header)
         product_details = Amazon.scrape(asin=product["asin"], product_name=product["product_name"],
-                      keyword=product["keyword1"] or product["keyword2"] or product["keyword3"],
-                      headers=ua_header
-        )
+                                        keyword=product["keyword1"] or product["keyword2"] or product["keyword3"],
+                                        headers=ua_header
+                                        )
         print(product_details)
+
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
