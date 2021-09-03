@@ -1,21 +1,42 @@
 
 from googleapiclient.discovery import build
 from google.oauth2 import service_account
+from headers import Singleton
 
-SERVICE_ACCOUNT_FILE = 'keys.json'
-SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
-creds = None
-creds = service_account.Credentials.from_service_account_file(
-    SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+class GoogleSheet(metaclass=Singleton):
+    SERVICE_ACCOUNT_FILE = 'keys.json'
+    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+    SPREADSHEET_ID = '1KrPYhcIIbYVahqybpoiE4j6nl1vQQ-py5KgeXbmufYQ'
 
-SAMPLE_SPREADSHEET_ID = '1KrPYhcIIbYVahqybpoiE4j6nl1vQQ-py5KgeXbmufYQ'
-service = build('sheets', 'v4', credentials=creds)
+    def __init__(self):
+        self.creds = service_account.Credentials.from_service_account_file(
+            GoogleSheet.SERVICE_ACCOUNT_FILE,
+            scopes=GoogleSheet.SCOPES
+        )
+        self.service = build('sheets', 'v4', credentials=self.creds)
+        self.sheet = self.service.spreadsheets()
 
-sheet = service.spreadsheets()
-result = sheet.values().get(spreadsheetId=SAMPLE_SPREADSHEET_ID,
-                            range="ok!A1:B4").execute()
+    def writeLineToSheet(self, data):
+        '''
 
-values = result.get('values', [])
-request = sheet.values().update(spreadsheetId=SAMPLE_SPREADSHEET_ID, range='ok!A1', valueInputOption='USER_ENTERED', body={'values':result_data}).execute()
-print(values)
+        :param data:
+        {
+            "Product Name": "Mars By GHC Green tea, L-carnitine & Gugul With Natural Ingredients For Fitness Management 60 Capsules",
+            "Asin": "B097F2MXJ3",
+            "Site": "Amazon",
+            "Rank": {
+                "Global": "No Rank",
+                "Sponsored": "No Rank",
+                "Non-Sponsored": "No Rank"
+            }
+        }
+        :return:
+        '''
+        result_data = [[data["Product Name"], data["Asin"], data["Site"], data["Rank"]["Global"], data["Rank"]["Sponsored"], data["Rank"]["Non-Sponsored"]]]
+        resource = {
+            "majorDimension": "ROWS",
+            "values": result_data
+        }
+        request = self.sheet.values().append(spreadsheetId=GoogleSheet.SPREADSHEET_ID, range='ok!A1', valueInputOption='USER_ENTERED', body=resource).execute()
+        return request

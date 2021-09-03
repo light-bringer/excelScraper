@@ -3,6 +3,8 @@ from headers import UserAgents
 from scraper import Amazon
 import json
 
+from writer import GoogleSheet
+
 
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
@@ -21,12 +23,13 @@ def work():
     "keyword2": row[4],
     "keyword3": row[5],
     '''
+    google_sheet = GoogleSheet()
     amzn_products = []
     for product in products_to_scrape:
         ua_header = {
             'User-Agent': UA.getRandomUA()
         }
-        print(ua_header)
+        # print(ua_header)
         product_details = Amazon.scrape(asin=product["asin"], product_name=product["product_name"],
                                         keyword=product["keyword1"] or product["keyword2"] or product["keyword3"],
                                         headers=ua_header
@@ -34,8 +37,9 @@ def work():
         amzn_products.append(product_details)
 
     print(amzn_products)
-    with open('data.json', 'w', encoding='utf-8') as f:
-        json.dump(amzn_products, f, ensure_ascii=False, indent=4)
+    for amzn_product in amzn_products:
+        a = google_sheet.writeLineToSheet(amzn_product)
+        print(a)
 
 
 # Press the green button in the gutter to run the script.
