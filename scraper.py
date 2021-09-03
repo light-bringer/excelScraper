@@ -1,3 +1,4 @@
+import datetime
 from abc import ABC, abstractmethod
 from bs4 import BeautifulSoup
 import requests
@@ -45,6 +46,7 @@ class Amazon(Scraper):
                  f"Sponsored: {amz_sponsored_rank}, " \
                  f"Non-sponsored: {amz_non_sponsored_rank}"
         result_dict = {
+            'timestamp': datetime.datetime.now().isoformat(),
             'Product Name': product_name,
             'Asin': asin,
             'Site': "Amazon",

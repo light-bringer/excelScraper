@@ -33,7 +33,10 @@ class GoogleSheet(metaclass=Singleton):
         }
         :return:
         '''
-        result_data = [[data["Product Name"], data["Asin"], data["Site"], data["Rank"]["Global"], data["Rank"]["Sponsored"], data["Rank"]["Non-Sponsored"]]]
+        if not data:
+            return
+
+        result_data = [[data["timestamp"], data["Product Name"], data["Asin"], data["Site"], data["Rank"]["Global"], data["Rank"]["Sponsored"], data["Rank"]["Non-Sponsored"]]]
         resource = {
             "majorDimension": "ROWS",
             "values": result_data
